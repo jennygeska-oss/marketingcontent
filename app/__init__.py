@@ -1,16 +1,12 @@
 from flask import Flask
 
 from app.extensions import db, migrate
+from config import config
 
 
 def create_app(config_name="development"):
     app = Flask(__name__)
-    app.config["CONFIG_NAME"] = config_name
-
-    if config_name == "testing":
-        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
-    else:
-        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///dev.db"
+    app.config.from_object(config[config_name])
 
     db.init_app(app)
     migrate.init_app(app, db)
